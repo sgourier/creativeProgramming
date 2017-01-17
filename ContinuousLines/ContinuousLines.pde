@@ -1,3 +1,11 @@
+import org.dishevelled.processing.frames.*;
+
+import g4p_controls.*;
+
+import net.java.games.input.*;
+import org.gamecontrolplus.*;
+import org.gamecontrolplus.gui.*;
+
 
 // pmberger@orange.fr
 
