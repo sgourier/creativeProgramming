@@ -29,6 +29,19 @@ float aspectRatio, aspectRatio2;
 MSAFluidSolver2D fluidSolver;
 ParticleSystem particleSystem;
 
+//Variables manette
+boolean water = false;
+boolean fire = false;
+boolean earth = false;
+boolean air = false;
+float x1StickValue = 0;
+float y1StickValue = 0;
+float x2StickValue = 0;
+float y2StickValue = 0;
+ControlIO control;
+Configuration config;
+ControlDevice gpad;
+
 PImage imgFluid;
 boolean untouched=true;
 // --------------------------------------------------
@@ -61,6 +74,15 @@ void setup()
 
   // create particle system
   particleSystem = new ParticleSystem();   
+  
+    // Initialise the ControlIO
+  control = ControlIO.getInstance(this);
+  // Find a device that matches the configuration file
+  gpad = control.getMatchedDevice("gamepad_inputs");
+  if (gpad == null) {
+    println("No suitable device configured");
+    System.exit(-1); // End the program NOW!
+  }
 }
 // --------------------------------------------------
 
@@ -76,7 +98,7 @@ void draw ()
   }         
   imgFluid.updatePixels();
   image(imgFluid, 0, 0, width, height);     
-  particleSystem.updateAndDraw();   
+  particleSystem.updateAndDraw();
 }
 // --------------------------------------------------
 
@@ -93,4 +115,23 @@ public void mouseDragged()
 }
 // --------------------------------------------------
 
- 
+// --------------------------------------------------
+
+public void getControllerStatus()
+{
+    water = gpad.getButton("WATER").pressed();
+    fire = gpad.getButton("FIRE").pressed();
+    earth = gpad.getButton("EARTH").pressed();
+    air = gpad.getButton("AIR").pressed();
+    
+    x1StickValue = gpad.getSlider("XPOS1").getValue();
+    y1StickValue = gpad.getSlider("YPOS1").getValue();
+    
+    x2StickValue = gpad.getSlider("XPOS2").getValue();
+    y2StickValue = gpad.getSlider("YPOS2").getValue();
+    
+    /*if(xStickValue != 0)
+      elX += xStickValue;
+    if(yStickValue != 0)  
+      elY += yStickValue;*/
+}

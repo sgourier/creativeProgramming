@@ -1,0 +1,9 @@
+Eyes controller
+XPOS1	X1	3	SLIDER	Axe X	0	1.0	0.15
+YPOS1	Y1	3	SLIDER	Axe Y	0	1.0	0.15
+XPOS2	X2	3	SLIDER	Rotation X	0	1.0	0.15
+YPOS2	Y2	3	SLIDER	Rotation Y	0	1.0	0.15
+EARTH	Earth button	1	BUTTON	Bouton 0	0	0.0	0.0
+WATER	Water button	1	BUTTON	Bouton 3	0	0.0	0.0
+AIR	Air button	1	BUTTON	Bouton 2	0	0.0	0.0
+FIRE	Fire button	1	BUTTON	Bouton 1	0	0.0	0.0
