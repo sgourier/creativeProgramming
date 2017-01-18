@@ -88,7 +88,7 @@ void setup()
 
   // create particle system
   particleSystem = new ParticleSystem();   
-  
+  /*
     // Initialise the ControlIO
   control = ControlIO.getInstance(this);
   // Find a device that matches the configuration file
@@ -96,7 +96,7 @@ void setup()
   if (gpad == null) {
     println("No suitable device configured");
     System.exit(-1); // End the program NOW!
-  }
+  }*/
 }
 // --------------------------------------------------
 
@@ -111,14 +111,14 @@ void draw ()
     for(int i=0; i<fluidSolver.getNumCells(); i++) 
     {
       int d = 2;
-      imgFluid.pixels[i] = color(0, 0, fluidSolver.b[i] * d);
+      imgFluid.pixels[i] = color(fluidSolver.r[i] * d, fluidSolver.g[i] * d, fluidSolver.b[i] * d);
     }         
     imgFluid.updatePixels();
- //   image(imgFluid, 0, 0, width, height);    
+   image(imgFluid, 0, 0, width, height);    
     particleSystem.updateAndDraw();
     
   fluid.endDraw();
- // image(fluid, 0, 0, width, height);
+  image(fluid, 0, 0, width, height);
   
    tree.beginDraw();
      stroke(200, 0, 0, 200);
