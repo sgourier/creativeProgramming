@@ -34,6 +34,10 @@ boolean water = false;
 boolean fire = false;
 boolean earth = false;
 boolean air = false;
+
+PGraphics tree;
+PGraphics fluid;
+
 float x1StickValue = 0;
 float y1StickValue = 0;
 float x2StickValue = 0;
@@ -44,6 +48,11 @@ ControlDevice gpad;
 
 PImage imgFluid;
 boolean untouched=true;
+
+pathfinder[] paths = new pathfinder[0];
+int num = 2;
+static int count;
+
 // --------------------------------------------------
 
 
@@ -55,6 +64,11 @@ boolean untouched=true;
 void setup() 
 {
   size (1366,768, P2D);
+      smooth();
+  fluid = createGraphics(width, height);
+  tree = createGraphics(width, height);
+  
+  
   
   // Fluid Init
   w=width;
@@ -89,16 +103,39 @@ void setup()
 // --------------------------------------------------
 void draw () 
 {
+   
   
-  fluidSolver.update();
-  for(int i=0; i<fluidSolver.getNumCells(); i++) 
-  {
-    int d = 2;
-    imgFluid.pixels[i] = color(0, 0, fluidSolver.b[i] * d);
-  }         
-  imgFluid.updatePixels();
-  image(imgFluid, 0, 0, width, height);     
-  particleSystem.updateAndDraw();
+  fluid.beginDraw();
+    
+    fluidSolver.update();
+    for(int i=0; i<fluidSolver.getNumCells(); i++) 
+    {
+      int d = 2;
+      imgFluid.pixels[i] = color(0, 0, fluidSolver.b[i] * d);
+    }         
+    imgFluid.updatePixels();
+ //   image(imgFluid, 0, 0, width, height);    
+    particleSystem.updateAndDraw();
+    
+  fluid.endDraw();
+ // image(fluid, 0, 0, width, height);
+  
+   tree.beginDraw();
+     stroke(200, 0, 0, 200);
+
+     for (int i = 0; i < paths.length; i++) {
+        PVector loc = paths[i].location;
+        PVector lastLoc = paths[i].lastLocation;
+        strokeWeight(paths[i].diameter);
+        line(lastLoc.x, lastLoc.y, loc.x, loc.y);
+        paths[i].update();
+      }
+   tree.endDraw();
+  image(tree, 0, 0, width, height);
+   
+ // 
+  
+
 }
 // --------------------------------------------------
 
@@ -114,6 +151,14 @@ public void mouseDragged()
   addForce(mouseNormX, mouseNormY, mouseVelX, mouseVelY);
 }
 // --------------------------------------------------
+
+public void mousePressed()
+{
+  count = 0;
+  paths = new pathfinder[num];
+  for(int i = 0; i < num; i++) paths[i] = new pathfinder();
+}
+
 
 // --------------------------------------------------
 
