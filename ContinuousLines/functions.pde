@@ -27,7 +27,7 @@ public void addForce(float x, float y, float dx, float dy)
     fluidSolver.gOld[index]  += green(drawColor) * colorMult;
     fluidSolver.bOld[index]  += blue(drawColor) * colorMult;
 
-    particleSystem.addParticles(x * width, y * height, 10);
+    particleSystem.addParticles(x * width, y * height, 5);
     fluidSolver.uOld[index] += dx * velocityMult;
     fluidSolver.vOld[index] += dy * velocityMult;
     

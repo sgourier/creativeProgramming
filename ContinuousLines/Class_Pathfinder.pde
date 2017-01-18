@@ -41,7 +41,7 @@ class pathfinder {
           isFinished = true;
           noStroke();
           fill(240, 230, 150, 100);
-          ellipse(location.x, location.y, 10, 10);
+          //ellipse(location.x, location.y, 10, 10);
           stroke(200, 0, 0, 200);
         }
       }

@@ -6,7 +6,7 @@
 import org.dishevelled.processing.frames.*;
 
 import g4p_controls.*;
-
+import java.util.*;
 import net.java.games.input.*;
 import org.gamecontrolplus.*;
 import org.gamecontrolplus.gui.*;
@@ -18,7 +18,7 @@ import org.gamecontrolplus.gui.*;
 static  float sizex;
 static  float sizey;
 
-final float FLUID_WIDTH = 150;
+final float FLUID_WIDTH = 250;
 final static int maxParticles = 2000;
 static int w;
 static int h;
@@ -53,7 +53,10 @@ pathfinder[] paths = new pathfinder[0];
 int num = 2;
 static int count;
 
- Snowflake snow = new Snowflake();
+ArrayList<Snow> snows;
+ArrayList<Wind> wind;
+
+int elementChoice = 0;
 
 // --------------------------------------------------
 
@@ -65,15 +68,9 @@ static int count;
 // --------------------------------------------------
 void setup() 
 {
-  
-  snow.setupSnow();
-  
   size (1366,768, P2D);
       smooth();
   fluid = createGraphics(width, height);
-  tree = createGraphics(width, height);
-  
-  
   
   // Fluid Init
   w=width;
@@ -102,6 +99,11 @@ void setup()
     println("No suitable device configured");
     System.exit(-1); // End the program NOW!
   }*/
+  
+  snows = new ArrayList<Snow>();
+  wind = new ArrayList<Wind>();
+  loadSnow();
+  loadWind();
 }
 // --------------------------------------------------
 
@@ -116,19 +118,47 @@ void draw ()
     for(int i=0; i<fluidSolver.getNumCells(); i++) 
     {
       int d = 2;
-      imgFluid.pixels[i] = color(fluidSolver.r[i] * d,0, 0);
+      switch (elementChoice)
+      {
+       case 0: // Water
+        imgFluid.pixels[i] = color(0,0, fluidSolver.b[i] * d);
+         break;
+       case 1: // Earth
+        imgFluid.pixels[i] = color(0, fluidSolver.g[i] * d, 0);
+         break;
+       case 2: // Fire
+        imgFluid.pixels[i] = color(fluidSolver.r[i] * d ,0, 0);
+         break;
+       case 3: // Air
+        imgFluid.pixels[i] = color(fluidSolver.r[i] * d ,fluidSolver.r[i] * d, fluidSolver.r[i] * d);
+         break;
+      }
     }         
     imgFluid.updatePixels();
    image(imgFluid, 0, 0, width, height);
-  fluid.endDraw();
-  image(fluid, 0, 0, width, height);
       
+  
+  //lights();  //Only for 3D
     particleSystem.updateAndDraw();
-    snow.drawSnow();
-   tree.beginDraw();
-    
      stroke(200, 0, 0, 200);
 
+    if(elementChoice == 0)
+    {
+    if ((frameCount % 10) == 0) {
+      addSnow();
+    }
+    for(int i = 0; i < snows.size(); i++){
+      Snow s = snows.get(i);
+      if(s.death){
+        snows.remove(s);
+      } 
+    }
+    drawSnow();
+    }
+    
+    
+    if(elementChoice == 2)
+    {
      for (int i = 0; i < paths.length; i++) {
         PVector loc = paths[i].location;
         PVector lastLoc = paths[i].lastLocation;
@@ -143,8 +173,23 @@ void draw ()
       
         addForce(mouseNormX, mouseNormY, mouseVelX, mouseVelY);
       }
-   tree.endDraw();
-  image(tree, 0, 0, width, height);
+    }
+    
+    if(elementChoice == 3)
+    {
+    if ((frameCount % 10) == 0) {
+      addWind();
+    }
+    for(int i = 0; i < wind.size(); i++){
+      Wind w = wind.get(i);
+      if(w.death){
+        wind.remove(w);
+      } 
+    }
+    drawWind();
+    }
+   fluid.endDraw();
+  image(fluid, 0, 0, width, height);
    
  // 
   
@@ -167,9 +212,12 @@ public void mouseDragged()
 
 public void mousePressed()
 {
-  count = 0;
-  paths = new pathfinder[num];
-  for(int i = 0; i < num; i++) paths[i] = new pathfinder();
+  if(elementChoice == 2)
+  {
+    count = 0;
+    paths = new pathfinder[num];
+    for(int i = 0; i < num; i++) paths[i] = new pathfinder();
+  }
   
   
 }
@@ -194,4 +242,23 @@ public void getControllerStatus()
       elX += xStickValue;
     if(yStickValue != 0)  
       elY += yStickValue;*/
+}
+
+void keyPressed() 
+{
+  snows = new ArrayList<Snow>();
+  wind = new ArrayList<Wind>();
+  loadSnow();
+  loadWind();
+  switch(key)
+  {
+    case '0': elementChoice = 0;
+    break;
+    case '1': elementChoice = 1;
+    break;
+    case '2': elementChoice = 2;
+    break;
+    case '3': elementChoice = 3;
+    break;
+  }
 }
