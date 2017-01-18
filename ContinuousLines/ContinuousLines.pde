@@ -128,7 +128,14 @@ void draw ()
         PVector lastLoc = paths[i].lastLocation;
         strokeWeight(paths[i].diameter);
         line(lastLoc.x, lastLoc.y, loc.x, loc.y);
-        paths[i].update();
+        paths[i].update();    
+        
+        float mouseNormX = loc.x * invWidth;
+        float mouseNormY = loc.y * invHeight;
+        float mouseVelX = (loc.x - lastLoc.x) * invWidth;
+        float mouseVelY = (loc.y - lastLoc.y) * invHeight;
+      
+        addForce(mouseNormX, mouseNormY, mouseVelX, mouseVelY);
       }
    tree.endDraw();
   image(tree, 0, 0, width, height);
