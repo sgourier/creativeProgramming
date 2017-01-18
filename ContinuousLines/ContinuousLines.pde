@@ -53,6 +53,8 @@ pathfinder[] paths = new pathfinder[0];
 int num = 2;
 static int count;
 
+ Snowflake snow = new Snowflake();
+
 // --------------------------------------------------
 
 
@@ -63,6 +65,9 @@ static int count;
 // --------------------------------------------------
 void setup() 
 {
+  
+  snow.setupSnow();
+  
   size (1366,768, P2D);
       smooth();
   fluid = createGraphics(width, height);
@@ -111,16 +116,17 @@ void draw ()
     for(int i=0; i<fluidSolver.getNumCells(); i++) 
     {
       int d = 2;
-      imgFluid.pixels[i] = color(fluidSolver.r[i] * d, fluidSolver.g[i] * d, fluidSolver.b[i] * d);
+      imgFluid.pixels[i] = color(fluidSolver.r[i] * d,0, 0);
     }         
     imgFluid.updatePixels();
-   image(imgFluid, 0, 0, width, height);    
-    particleSystem.updateAndDraw();
-    
+   image(imgFluid, 0, 0, width, height);
   fluid.endDraw();
   image(fluid, 0, 0, width, height);
-  
+      
+    particleSystem.updateAndDraw();
+    snow.drawSnow();
    tree.beginDraw();
+    
      stroke(200, 0, 0, 200);
 
      for (int i = 0; i < paths.length; i++) {
@@ -164,6 +170,8 @@ public void mousePressed()
   count = 0;
   paths = new pathfinder[num];
   for(int i = 0; i < num; i++) paths[i] = new pathfinder();
+  
+  
 }
 
 
