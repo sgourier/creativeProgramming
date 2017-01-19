@@ -1,6 +1,6 @@
 int previousNote = 0;
 // add force and dye to fluid, and create particles
-public void addForce(float x, float y, float dx, float dy) 
+public void addForce(float x, float y, float dx, float dy, boolean particles) 
 {
   float speed = dx * dx  + dy * dy * aspectRatio2;    // balance the x and y components of speed with the screen aspect ratio
 
@@ -26,8 +26,11 @@ public void addForce(float x, float y, float dx, float dy)
     fluidSolver.rOld[index]  += red(drawColor) * colorMult;
     fluidSolver.gOld[index]  += green(drawColor) * colorMult;
     fluidSolver.bOld[index]  += blue(drawColor) * colorMult;
-
-    particleSystem.addParticles(x * width, y * height, 5);
+    
+    if(particles)
+    {
+      particleSystem.addParticles(x * width, y * height, 5);
+    }
     fluidSolver.uOld[index] += dx * velocityMult;
     fluidSolver.vOld[index] += dy * velocityMult;
     
@@ -43,12 +46,12 @@ AudioPlayer percu0, percu1, percu2;
 void playSound(float x, float y){
   
   x++;
-  y++;
+  //y++;
   
-  x *= 50;
-  y *= 50; 
+  x *= 22;
+ // y *= 50; 
   
-  int note = int(x * 22 / 2);
+  int note = int(x / 2);
   
    if(previousNote == note)
     return;
@@ -56,7 +59,9 @@ void playSound(float x, float y){
   previousNote = note;
   
   
-  float volume = - (y / 100);
+  float volume = - (y /*/ 100)*/);
+  
+  println("volu :",volume);
   
   
   switch(note){

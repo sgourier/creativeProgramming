@@ -57,6 +57,7 @@ static int count;
 
 ArrayList<Snow> snows;
 ArrayList<Wind> wind;
+ArrayList<Earth> earths;
 
 int elementChoice = 0;
 
@@ -72,7 +73,7 @@ Minim minim;
 // --------------------------------------------------
 void setup() 
 {
-  size (1366,768, P2D);
+  size (1366,768, P3D);
       smooth();
   fluid = createGraphics(width, height);
   
@@ -108,8 +109,10 @@ void setup()
   
   snows = new ArrayList<Snow>();
   wind = new ArrayList<Wind>();
+  earths = new ArrayList<Earth>();
   loadSnow();
   loadWind();
+  loadEarth();
 }
 // --------------------------------------------------
 
@@ -130,7 +133,7 @@ void draw ()
       }
       else if(earth)
       {
-          imgFluid.pixels[i] = color(0, fluidSolver.g[i] * d, 0);
+          imgFluid.pixels[i] = color((fluidSolver.r[i] * d) / 12 , (fluidSolver.g[i] * d) / 6  , 0);
       }
       else if(fire)
       {
@@ -138,7 +141,7 @@ void draw ()
       }
       else
       {
-            imgFluid.pixels[i] = color(fluidSolver.r[i] * d ,fluidSolver.r[i] * d, fluidSolver.r[i] * d);
+          imgFluid.pixels[i] = color(fluidSolver.r[i] * d ,fluidSolver.r[i] * d, fluidSolver.r[i] * d);
       }
     }         
     imgFluid.updatePixels();
@@ -178,27 +181,36 @@ void draw ()
         float mouseVelX = (loc.x - lastLoc.x) * invWidth;
         float mouseVelY = (loc.y - lastLoc.y) * invHeight;
       
-        addForce(mouseNormX, mouseNormY, mouseVelX, mouseVelY);
+        addForce(mouseNormX, mouseNormY, mouseVelX, mouseVelY, true);
       }
     }
     
     if(air)
     {
-    if ((frameCount % 10) == 0) {
-      addWind();
-    }
-    for(int i = 0; i < wind.size(); i++){
-      Wind w = wind.get(i);
-      if(w.death){
-        wind.remove(w);
-      } 
-    }
-    drawWind();
+      if ((frameCount % 10) == 0) {
+        addWind();
+      }
+      for(int i = 0; i < wind.size(); i++){
+        Wind w = wind.get(i);
+        if(w.death){
+          wind.remove(w);
+        } 
+      }
+      drawWind();
     }
     
     if(earth)
     {
-      
+       if ((frameCount % 2) == 0) {
+        addEarth();
+      }
+      for(int i = 0; i < earths.size(); i++){
+        Earth e = earths.get(i);
+        if(e.death){
+          earths.remove(e);
+        } 
+      }
+      drawEarth();
     }
     
     if(rTrigger)
@@ -230,7 +242,7 @@ public void mouseDragged()
   float mouseVelX = (mouseX - pmouseX) * invWidth;
   float mouseVelY = (mouseY - pmouseY) * invHeight;
 
-  addForce(mouseNormX, mouseNormY, mouseVelX, mouseVelY);
+  addForce(mouseNormX, mouseNormY, mouseVelX, mouseVelY, true);
 }
 // --------------------------------------------------
 
@@ -309,8 +321,10 @@ void keyPressed()
 {
   snows = new ArrayList<Snow>();
   wind = new ArrayList<Wind>();
+  earths = new ArrayList<Earth>();
   loadSnow();
   loadWind();
+  loadEarth();
   switch(key)
   {
     case '0': elementChoice = 0;

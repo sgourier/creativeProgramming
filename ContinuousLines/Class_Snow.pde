@@ -27,7 +27,7 @@ class Snow {
     noStroke();
     fill(255, 200);
     wind.x = random(-0.001, 0.001);
-    addForce(location.x, location.y, wind.x, gravity.y);
+    addForce(location.x, location.y, wind.x, gravity.y, true);
     location.x += wind.x;
     location.y += gravity.y;
   }
@@ -67,7 +67,7 @@ class Wind {
     noStroke();
     fill(255, 200);
     gravity.x = random(-0.001, 0.001);
-    addForce(location.x, location.y, wind.x, gravity.y);
+    addForce(location.x, location.y, wind.x, gravity.y, true);
     location.x += wind.x;
     location.y += gravity.y;
   }
@@ -79,6 +79,51 @@ class Wind {
     }
   }
 }
+
+
+
+class Earth {
+  PVector location;
+  PVector acceleration;
+  PVector velocity;
+  PVector wind;
+  PVector gravity;
+
+  float snowHeight, snowWidth;
+  float mass;
+
+  boolean death = false;
+
+  Earth() 
+  {
+    location = new PVector((float) random(width) / width, height);
+    wind = new PVector(random(-0.001, 0.001), 0);
+    gravity = new PVector(0, -0.005);
+  }
+
+  void display() {
+    drawEarth();
+    moveEarth();
+  }
+
+  void drawEarth() {
+    noStroke();
+    fill(255, 200);
+    wind.x = random(-0.004, 0.004);
+    addForce(location.x, location.y, wind.x, gravity.y, false);
+    location.x += wind.x;
+    location.y += gravity.y;
+  }
+  void moveEarth() {
+    //if (location.y > 1000+snowHeight) { //Only for 3D
+    if (location.y < (height / 3) * 2) {
+      death = true;
+    }
+  }
+}
+
+
+
 void loadWind() {
   for (int i = 0; i < 1; i++) {
     wind.add(new Wind());
@@ -87,6 +132,11 @@ void loadWind() {
 void loadSnow() {
   for (int i = 0; i < 1; i++) {
     snows.add(new Snow());
+  }
+}
+void loadEarth() {
+  for (int i = 0; i < 1; i++) {
+    earths.add(new Earth());
   }
 }
 
@@ -100,10 +150,18 @@ void drawWind() {
     w.display();
   }
 }
+void drawEarth() {
+  for (Earth e: earths) {
+    e.display();
+  }
+}
 
 void addSnow() {
   snows.add(new Snow());
 }
 void addWind() {
   wind.add(new Wind());
+}
+void addEarth() {
+  earths.add(new Earth());
 }
