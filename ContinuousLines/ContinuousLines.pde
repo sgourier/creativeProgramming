@@ -35,6 +35,8 @@ boolean fire = false;
 boolean earth = false;
 boolean air = false;
 
+boolean rTrigger = false;
+
 PGraphics tree;
 PGraphics fluid;
 
@@ -90,7 +92,7 @@ void setup()
 
   // create particle system
   particleSystem = new ParticleSystem();   
-  /*
+ 
     // Initialise the ControlIO
   control = ControlIO.getInstance(this);
   // Find a device that matches the configuration file
@@ -98,7 +100,7 @@ void setup()
   if (gpad == null) {
     println("No suitable device configured");
     System.exit(-1); // End the program NOW!
-  }*/
+  }
   
   snows = new ArrayList<Snow>();
   wind = new ArrayList<Wind>();
@@ -110,7 +112,7 @@ void setup()
 // --------------------------------------------------
 void draw () 
 {
-   
+  getControllerStatus();
   
   fluid.beginDraw();
     
@@ -118,20 +120,22 @@ void draw ()
     for(int i=0; i<fluidSolver.getNumCells(); i++) 
     {
       int d = 2;
-      switch (elementChoice)
+      
+      if(water)
       {
-       case 0: // Water
-        imgFluid.pixels[i] = color(0,0, fluidSolver.b[i] * d);
-         break;
-       case 1: // Earth
-        imgFluid.pixels[i] = color(0, fluidSolver.g[i] * d, 0);
-         break;
-       case 2: // Fire
-        imgFluid.pixels[i] = color(fluidSolver.r[i] * d ,0, 0);
-         break;
-       case 3: // Air
-        imgFluid.pixels[i] = color(fluidSolver.r[i] * d ,fluidSolver.r[i] * d, fluidSolver.r[i] * d);
-         break;
+          imgFluid.pixels[i] = color(0,0, fluidSolver.b[i] * d);
+      }
+      else if(earth)
+      {
+          imgFluid.pixels[i] = color(0, fluidSolver.g[i] * d, 0);
+      }
+      else if(fire)
+      {
+          imgFluid.pixels[i] = color(fluidSolver.r[i] * d ,0, 0);
+      }
+      else
+      {
+            imgFluid.pixels[i] = color(fluidSolver.r[i] * d ,fluidSolver.r[i] * d, fluidSolver.r[i] * d);
       }
     }         
     imgFluid.updatePixels();
@@ -142,7 +146,7 @@ void draw ()
     particleSystem.updateAndDraw();
      stroke(200, 0, 0, 200);
 
-    if(elementChoice == 0)
+    if(water)
     {
     if ((frameCount % 10) == 0) {
       addSnow();
@@ -157,7 +161,7 @@ void draw ()
     }
     
     
-    if(elementChoice == 2)
+    if(fire)
     {
      for (int i = 0; i < paths.length; i++) {
         PVector loc = paths[i].location;
@@ -175,7 +179,7 @@ void draw ()
       }
     }
     
-    if(elementChoice == 3)
+    if(air)
     {
     if ((frameCount % 10) == 0) {
       addWind();
@@ -188,6 +192,21 @@ void draw ()
     }
     drawWind();
     }
+    
+    if(earth)
+    {
+      
+    }
+    
+    if(rTrigger)
+    {
+        count = 0;
+        paths = new pathfinder[num];
+        for(int i = 0; i < num; i++) paths[i] = new pathfinder(); 
+    }
+    
+    
+    
    fluid.endDraw();
   image(fluid, 0, 0, width, height);
    
@@ -226,17 +245,53 @@ public void mousePressed()
 // --------------------------------------------------
 
 public void getControllerStatus()
-{
-    water = gpad.getButton("WATER").pressed();
-    fire = gpad.getButton("FIRE").pressed();
-    earth = gpad.getButton("EARTH").pressed();
-    air = gpad.getButton("AIR").pressed();
-    
+{   
     x1StickValue = gpad.getSlider("XPOS1").getValue();
     y1StickValue = gpad.getSlider("YPOS1").getValue();
     
     x2StickValue = gpad.getSlider("XPOS2").getValue();
     y2StickValue = gpad.getSlider("YPOS2").getValue();
+    
+    if(gpad.getButton("WATER").pressed())
+    {
+      water = true;
+      fire = false;
+      air = false;
+      earth = false;
+    }
+    
+    if(gpad.getButton("FIRE").pressed())
+    {
+      water = false;
+      fire = true;
+      air = false;
+      earth = false;
+    }
+    
+    if(gpad.getButton("AIR").pressed())
+    {
+      water = false;
+      fire = false;
+      air = true;
+      earth = false;
+    }
+    
+    if(gpad.getButton("EARTH").pressed())
+    {
+      water = false;
+      fire = false;
+      air = false;
+      earth = true;
+    }
+    
+    if(gpad.getSlider("RTRIGGER").getValue() < -0.9)
+    {
+      rTrigger = true;
+    }
+    else
+    {
+      rTrigger = false;
+    }
     
     /*if(xStickValue != 0)
       elX += xStickValue;
