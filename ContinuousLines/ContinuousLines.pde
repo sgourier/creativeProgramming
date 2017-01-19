@@ -44,6 +44,14 @@ float x1StickValue = 0;
 float y1StickValue = 0;
 float x2StickValue = 0;
 float y2StickValue = 0;
+float pX2StickValue = 0;
+float pY2StickValue = 0;
+
+int accelerator = 20;
+
+float posXRStick = width/2;
+float posYRStick = height/2;
+
 ControlIO control;
 Configuration config;
 ControlDevice gpad;
@@ -61,6 +69,11 @@ ArrayList<Earth> earths;
 
 int elementChoice = 0;
 
+ float mouseNormX = 0;
+ float mouseNormY = 0;
+ float mouseVelX = 0;
+ float mouseVelY = 0;
+
 Minim minim;
 
 // --------------------------------------------------
@@ -73,7 +86,7 @@ Minim minim;
 // --------------------------------------------------
 void setup() 
 {
-  size (1366,768, P3D);
+  size (1920,960, P3D);
       smooth();
   fluid = createGraphics(width, height);
   
@@ -226,8 +239,26 @@ void draw ()
   image(fluid, 0, 0, width, height);
   
   playSound(x1StickValue,y1StickValue);
+  
+    posXRStick += x2StickValue * accelerator;
+    posYRStick += y2StickValue * accelerator;
    
- // 
+   if(posXRStick * invWidth < width)
+     mouseNormX = posXRStick * invWidth;
+   else
+     mouseNormX = width;
+     
+   if( posYRStick * invHeight < height)
+     mouseNormY = posYRStick * invHeight;
+   else
+     mouseNormY = height;
+   mouseVelX = (posXRStick - pX2StickValue) * invWidth;
+   mouseVelY = (posYRStick - pY2StickValue) * invHeight;
+
+  addForce(mouseNormX, mouseNormY, mouseVelX, mouseVelY, true);
+  
+  pX2StickValue = posXRStick;
+  pY2StickValue = posYRStick;
   
 
 }
@@ -311,10 +342,15 @@ public void getControllerStatus()
       rTrigger = false;
     }
     
-    /*if(xStickValue != 0)
-      elX += xStickValue;
-    if(yStickValue != 0)  
-      elY += yStickValue;*/
+    if(gpad.getButton("LACCELERATOR").pressed() && accelerator > 0)
+    {
+        accelerator -= 2;
+    }
+    
+    if(gpad.getButton("RACCELERATOR").pressed() && accelerator < 20000)
+    {
+      accelerator += 2;
+    }
 }
 
 void keyPressed() 

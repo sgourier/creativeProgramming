@@ -8,3 +8,5 @@ EARTH	Earth button	1	BUTTON	Bouton 0	0	0.0	0.0
 WATER	Water button	1	BUTTON	Bouton 2	0	0.0	0.0
 AIR	Air button	1	BUTTON	Bouton 3	0	0.0	0.0
 FIRE	Fire button	1	BUTTON	Bouton 1	0	0.0	0.0
+LACCELERATOR	Accelerator Min	1	BUTTON	Bouton 4	0	0.0	0.0
+RACCELERATOR	Accelerator Max	1	BUTTON	Bouton 5	0	0.0	0.0
