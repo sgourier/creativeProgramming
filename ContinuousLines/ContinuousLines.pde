@@ -60,6 +60,8 @@ ArrayList<Wind> wind;
 
 int elementChoice = 0;
 
+Minim minim;
+
 // --------------------------------------------------
 
 
@@ -73,6 +75,8 @@ void setup()
   size (1366,768, P2D);
       smooth();
   fluid = createGraphics(width, height);
+  
+  configureNotes();
   
   // Fluid Init
   w=width;
@@ -115,7 +119,6 @@ void draw ()
   getControllerStatus();
   
   fluid.beginDraw();
-    
     fluidSolver.update();
     for(int i=0; i<fluidSolver.getNumCells(); i++) 
     {
@@ -209,6 +212,8 @@ void draw ()
     
    fluid.endDraw();
   image(fluid, 0, 0, width, height);
+  
+  playSound(x1StickValue,y1StickValue);
    
  // 
   
@@ -237,6 +242,7 @@ public void mousePressed()
     paths = new pathfinder[num];
     for(int i = 0; i < num; i++) paths[i] = new pathfinder();
   }
+  
   
   
 }
@@ -314,6 +320,6 @@ void keyPressed()
     case '2': elementChoice = 2;
     break;
     case '3': elementChoice = 3;
-    break;
+    break;  
   }
 }
